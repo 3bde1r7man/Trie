@@ -6,11 +6,11 @@ using namespace std;
 // Node is a data structure that represents a single node in a trie.
 class Node {
 public:
-	Node* children[26]; // 26 letters in the alphabet
+	Node* children[27]; // 26 letters in the alphabet
 	bool isEnd; // isEnd is true if the node represents the end of a word
 	// Constructor for Node class that initializes all children to NULL and isEnd to false.
 	Node() {
-		for (int i = 0; i < 26; i++) {
+		for (int i = 0; i < 27; i++) {
 			children[i] = NULL;
 		}
 		isEnd = false;
@@ -29,6 +29,9 @@ public:
 		Node* curr = root;
 		for (int i = 0; i < word.size(); i++) {
 			int index = word[i] - 'a';
+			if (word[i] == '$') {
+				index = 26;
+			}
 			if (curr->children[index] == NULL) {
 				curr->children[index] = new Node();
 			}
@@ -41,6 +44,9 @@ public:
 		Node* curr = root;
 		for (int i = 0; i < word.size(); i++) {
 			int index = word[i] - 'a';
+			if (word[i] == '$') {
+				index = 26;
+			}
 			// if the current character is not in the trie, return false
 			if (curr->children[index] == NULL) {
 				return false;
@@ -54,12 +60,27 @@ public:
 		return true;
 	}
 };
-int main() {
+class SuffixTrie {
 	Trie t;
+public:
+	void insert(string text) {
+		text += "$";
+		for (int i = 0; i < text.size(); i++)
+		{
+			t.insert(text.substr(i, text.size()));
+		}
+	}
+	bool search(string text) {
+		text += "$";
+		return t.search(text);
+	}
+};
+int main() {
+	SuffixTrie t;
 	t.insert("hello");
 	t.insert("world");
 	cout << t.search("hello") << endl;
-	cout << t.search("hell") << endl;
+	cout << t.search("ello") << endl;
 	cout << t.search("world") << endl;
 	cout << t.search("wor") << endl;
 }
